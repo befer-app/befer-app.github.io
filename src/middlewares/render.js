@@ -1,3 +1,4 @@
+import { logout } from '../api/user.js';
 import { render } from '../lib.js';
 import { getUserData } from '../util.js';
 import { notify } from './notify.js';
@@ -8,7 +9,7 @@ function boundRender(content) {
     render(content, root);
 }
 
-export default function decorateContext(ctx, next) {
+export function decorateContext(ctx, next) {
     ctx.render = boundRender;
     ctx.updateUserNav = updateUserNav;
     ctx.notify = notify;
@@ -17,12 +18,12 @@ export default function decorateContext(ctx, next) {
     next();
 }
 
-function updateUserNav() {
+export function updateUserNav() {
     document.querySelector('nav').style.display = 'flex';
 
     const userData = getUserData();
-    const userNavEls = Array.from(document.querySelectorAll('nav li#user'));
-    const guestNavEls = Array.from(document.querySelectorAll('nav li#guest'));
+    const userNavEls = Array.from(document.querySelectorAll('li.user'));
+    const guestNavEls = Array.from(document.querySelectorAll('li.guest'));
 
     if (userData) {
         userNavEls.forEach(el => el.style.display = 'inline-block');
