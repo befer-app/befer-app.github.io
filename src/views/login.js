@@ -19,7 +19,9 @@ export function loginPage(ctx) {
     update();
 
     function update(errors = {}, data = {}) {
-        ctx.render(loginTemplate(createSubmitHandler(onSubmit, 'username', 'password'), errors, data));
+        const fieldNames = [ 'username', 'password' ];
+
+        ctx.render(loginTemplate(createSubmitHandler(onSubmit, fieldNames), errors, data));
     }
 
     async function onSubmit({ username, password }, event) {

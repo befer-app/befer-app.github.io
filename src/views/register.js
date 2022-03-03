@@ -25,7 +25,9 @@ export function registerPage(ctx) {
     update();
 
     function update(errors = {}, data = {}) {
-        ctx.render(registerTemplate(createSubmitHandler(onSubmit, 'username', 'password', 'repeatPass', 'email'), errors, data));
+        const fieldNames = [ 'username', 'password', 'repeatPass', 'email' ];
+
+        ctx.render(registerTemplate(createSubmitHandler(onSubmit, fieldNames), errors, data));
     }
 
     async function onSubmit({ username, password, repeatPass, email }, event) {

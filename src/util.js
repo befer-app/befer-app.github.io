@@ -10,7 +10,7 @@ export function clearUserData() {
     localStorage.removeItem('userData');
 }
 
-export function createSubmitHandler(callback, ...fields) {
+export function createSubmitHandler(callback, fields) {
     return function(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
