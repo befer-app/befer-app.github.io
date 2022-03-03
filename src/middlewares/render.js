@@ -1,5 +1,6 @@
 import { render } from '../lib.js';
 import { getUserData } from '../util.js';
+import { notify } from './notify.js';
 
 const root = document.querySelector('main');
 
@@ -10,6 +11,7 @@ function boundRender(content) {
 export default function decorateContext(ctx, next) {
     ctx.render = boundRender;
     ctx.updateUserNav = updateUserNav;
+    ctx.notify = notify;
 
     updateUserNav();
     next();

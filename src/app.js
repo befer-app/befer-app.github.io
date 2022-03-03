@@ -3,6 +3,7 @@ import { homePage } from './views/home.js';
 import { loginPage } from './views/login.js';
 import addSession from './middlewares/session.js';
 import decorateContext from './middlewares/render.js';
+import { notify } from './middlewares/notify.js';
 
 page(addSession);
 page(decorateContext);

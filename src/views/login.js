@@ -10,7 +10,7 @@ const loginTemplate = (onSubmit, errors, data) => html`
         ${field({ label: 'Username', name: 'username', value: data.username, placeholder: 'Username', error: errors.username })}
     </div>
     <div>
-        ${field({ label: 'Password', name: 'password', type: 'password', placeholder: 'Password', error: errors.password })}
+        ${field({ label: 'Password', name: 'password', type: 'password', placeholder: 'Password', error: errors.password})}
     </div>
     <button class="btn" type="submit">Login</button>
 </form>`;
@@ -26,18 +26,15 @@ export function loginPage(ctx) {
         try {
             if (username == '' || password == '') {
                 throw {
-                    message: 'The field are required!',
-                    errors: {
-                        username: username == '',
-                        password: password == ''
-                    }
+                    username: username == '' ? 'The field is required!' : '',
+                    password: password == '' ? 'The field is required!' : ''
                 };
             }
 
             SlickLoader.enable();
 
             await login(username, password);
-            
+
             SlickLoader.disable();
             event.target.reset();
             ctx.updateSession();
@@ -45,7 +42,8 @@ export function loginPage(ctx) {
             ctx.page.redirect('/catalog');
         } catch (err) {
             SlickLoader.disable();
-            update(err.errors, { username });
+
+            update(err, { username });
         }
     }
 }
