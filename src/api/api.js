@@ -14,7 +14,7 @@ async function request(url, options) {
 
         return await response.json();
     } catch (err) {
-        notify(err.message);
+        notify(err.message, 'error');
         throw err;
     }
 }
