@@ -1,73 +1,70 @@
-import { createPublication } from '../api/publication.js';
-import { html } from '../lib.js';
-import { field } from './common.js';
-import { createSubmitHandler } from '../util.js';
+import { deletePublication, getPublicationById } from '../api/publication.js';
+import { html, until } from '../lib.js';
+import { notify } from '../middlewares/notify.js';
 
-const detailsTemplate = (onSubmit, errors, data) => html`
+const detailsTemplate = (itemPromise) => html`
 <div class="container">
-
-    <section class="details">
-        <h1>Publication title: Who's Afraid of Virginia Woolf? by Edward Albee</h1>
-        <div>
-            <img src="https://media.timeout.com/images/103727744/380/285/image.jpg" />
-        </div>
-    </section>
-
-    <section class="details">
-        <h3>Publication Description</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores, et ex. Dignissimos
-            voluptatum recusandae quos. Eum beatae soluta velit voluptas hic incidunt ab dolorem ipsam
-            blanditiis laudantium. Distinctio, aliquam libero.</p>
-        <div class="buttons">
-            <a class="btn delete" href="">Delete</a>
-            <a class="btn edit" href="">Edit</a>
-            <span class="liked">You have already liked this play!</span>
-            <a class="btn like" href="">Like</a>
-        </div>
-    </section>
+    ${until(itemPromise)}
 </div>`;
 
+const itemTemplate = (publication, onDelete, isOwner) => html`
+<section class="details">
+    <h1 class="margin-b20"><i>Post title:</i> ${publication.title}</h1>
+    <div class="textCenter">
+        <img src=${publication.beforeImgUrl} />
+        <img src=${publication.afterImgUrl} />
+    </div>
+    <div class="textCenter margin-t20">
+        <h3>Post Description</h3>
+        <p>${publication.description}</p>
+        <div class="buttons">
+            ${isOwner ? html`
+            <a @click=${onDelete} class="btn delete" href="javascript:void(0)">Delete</a>
+            <a class="btn edit" href="/edit/${publication.objectId}" }>Edit</a>`
+            : ''}
+            <span class="liked">You have already liked this post!</span>
+            <a class="btn like" href="/like/${publication.objectId}">Like</a>
+        </div>
+    </div>
+</section>
+
+<section class="details">
+    <div class="textCenter">
+        <h3>Post Author</h3>
+        <p>Username: ${publication.owner.username}</p>
+        <p>Full name: ${publication.owner.username}</p>
+        <p>Email: ${publication.owner.email}</p>
+    </div>
+</section>`;
+
 export function detailsPage(ctx) {
-    const fieldNames = ['title', 'description', 'beforeImgUrl', 'afterImgUrl'];
+    const id = ctx.params.id;
+    const userId = ctx.user.id;
 
-    update();
+    ctx.render(detailsTemplate(loadItem(id, onDelete, userId)));
 
-    function update(errors = {}, data = {}) {
-        ctx.render(detailsTemplate(createSubmitHandler(onSubmit, fieldNames), errors, data));
-    }
+    async function onDelete() {
+        const choise = confirm('Are you sure you want to delete this post?');
 
-    async function onSubmit(data, event) {
-        try {
+        if (choise) {
             SlickLoader.enable();
-
-            const formData = new FormData(event.target);
-            const isPublic = formData.get('checkbox') == null ? false : true;
-            data['isPublic'] = isPublic;
-
-            if (data.title == '' || data.beforeImgUrl == '' || data.afterImgUrl == '') {
-                throw {
-                    title: data.title == '' ? 'Title is required!' : '',
-                    beforeImgUrl: data.beforeImgUrl == '' ? '"Before" image URL is required!' : '',
-                    afterImgUrl: data.afterImgUrl == '' ? '"After" image URL is required!' : '',
-                }
-            }
-
-            if (data.title.length < 4 || data.beforeImgUrl.length < 10 || data.afterImgUrl.length < 10) {
-                throw {
-                    title: data.title.length < 4 ? 'Title should be atleast 4 symbols long!' : '',
-                    beforeImgUrl: data.beforeImgUrl.length < 10 ? '"Before" image URL should be atleast 10 symbols long!' : '',
-                    afterImgUrl: data.afterImgUrl.length < 10 ? '"After" image URL should be atleast 10 symbols long!' : '',
-                }
-            }
-
-            const { objectId } = await createPublication(data);
-
-            SlickLoader.disable();
-            ctx.page.redirect(`/details/${objectId}`);
-        } catch (err) {
+            await deletePublication(id);
             SlickLoader.disable();
 
-            update(err, data);
+            notify('The post was deleted successfully!', 'success');
+
+            ctx.page.redirect('/');
         }
     }
+}
+
+async function loadItem(id, onDelete, userId) {
+    SlickLoader.enable();
+
+    const publication = await getPublicationById(id);
+    const isOwner = publication.owner.objectId == userId;
+
+    SlickLoader.disable();
+
+    return itemTemplate(publication, onDelete, isOwner);
 }
