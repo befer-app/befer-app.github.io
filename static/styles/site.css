@@ -202,3 +202,13 @@ input.error, textarea.error {
     box-shadow: 2px 2px 5px rgba(65,199,255,255);
     color: white;
 }
+
+.registerPath {
+    margin: auto;
+    margin-top: 2px;
+    display: inline-block;
+}
+
+.registerPath>a {
+    color: rgb(32, 18, 160);
+}

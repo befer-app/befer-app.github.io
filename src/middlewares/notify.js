@@ -19,7 +19,7 @@ export function notify(message, classType) {
 
     list.appendChild(liItem);
 
-    setTimeout(() => liItem.remove(), 3000);
+    setTimeout(() => liItem.remove(), 4000);
 }
 
 function onClick(event) {

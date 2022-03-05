@@ -13,6 +13,7 @@ const loginTemplate = (onSubmit, errors, data) => html`
         ${field({ label: 'Password', name: 'password', type: 'password', placeholder: 'Password', error: errors.password})}
     </div>
     <button class="btn" type="submit">Login</button>
+    <div class="registerPath">You don't have a profile? &nbsp; <a class="registerPath" href="/register"><b><u>Join Befer now!</u></b></a></div>    
 </form>`;
 
 export function loginPage(ctx) {

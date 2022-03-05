@@ -72,8 +72,8 @@ export async function login(username, password) {
     return result;
 }
 
-export async function register(username, password, email) {
-    const result = await post('/users', { username, password, email });
+export async function register(fullName, username, password, email) {
+    const result = await post('/users', { fullName, username, password, email });
 
     const userData = {
         username,

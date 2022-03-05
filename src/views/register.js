@@ -7,6 +7,9 @@ const registerTemplate = (onSubmit, errors, data) => html`
 <form @submit=${onSubmit}>
     <h2>Register</h2>
     <div class="on-dark">
+        ${field({ label: 'First and last name', name: 'fullName', value: data.fullName, placeholder: 'John Jonsen', error: errors.fullName })}
+    </div>
+    <div class="on-dark">
         ${field({ label: 'Username', name: 'username', value: data.username, placeholder: 'John93', error: errors.username })}
     </div>
     <div class="on-dark">
@@ -25,15 +28,16 @@ export function registerPage(ctx) {
     update();
 
     function update(errors = {}, data = {}) {
-        const fieldNames = [ 'username', 'password', 'repeatPass', 'email' ];
+        const fieldNames = [ 'fullName', 'username', 'password', 'repeatPass', 'email' ];
 
         ctx.render(registerTemplate(createSubmitHandler(onSubmit, fieldNames), errors, data));
     }
 
-    async function onSubmit({ username, password, repeatPass, email }, event) {
+    async function onSubmit({ fullName, username, password, repeatPass, email }, event) {
         try {
-            if (username == '' || password == '' || repeatPass == '') {
+            if (username == '' || password == '' || repeatPass == '' || fullName == '') {
                 throw {
+                    fullName: fullName == '' ? 'Full name is required!' : '',
                     username: username == '' ? 'Username is required!' : '',
                     email: email == '' ? 'Email is required!' : '',
                     password: password == '' ? 'Password is required!' : '',
@@ -49,7 +53,7 @@ export function registerPage(ctx) {
 
             SlickLoader.enable();
 
-            await register(username, password, email);
+            await register(fullName, username, password, email);
 
             SlickLoader.disable();
             event.target.reset();
