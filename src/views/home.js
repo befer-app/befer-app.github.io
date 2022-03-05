@@ -1,7 +1,7 @@
 import { getPublications } from '../api/publication.js';
 import { html, until } from '../lib.js';
 
-const homeTemplate = (publicationPromise) => html`
+const homeTemplate = (publicationPromise, user) => html`
 <section class="main container">
     <h1>The Best Network for Sharing Your "Before and After" Photography</h1>
     <h2>Share your progress, renovation or great achievement and <u>Befer</u> Your Life</h2>
@@ -10,7 +10,7 @@ const homeTemplate = (publicationPromise) => html`
     <div class="aux">
         <h1>Posts</h1>
         <div class="home-buttons"> 
-            <a class="btn create-play" href="/create">Create Post</a>
+            ${user ? html`<a class="btn create-play" href="/create">Create Post</a>` : ''}
             <a class="btn create-play" href="/sort">Sort by Date</a>
             <a class="btn create-play" href="/sort">Sort by Likes</a>
         </div>
@@ -37,7 +37,9 @@ const publicationTemplate = (publication) => html`
 </div>`;
 
 export async function homePage(ctx) {
-    ctx.render(homeTemplate(loadPublications()));
+    const user = ctx.user;
+
+    ctx.render(homeTemplate(loadPublications(), user));
 }
 
 async function loadPublications() {

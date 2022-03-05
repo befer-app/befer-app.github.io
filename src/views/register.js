@@ -41,6 +41,12 @@ export function registerPage(ctx) {
                 };
             }
 
+            if (password != repeatPass) {
+                throw {
+                    repeatPass: 'The passwords don\'t match!'
+                }
+            }
+
             SlickLoader.enable();
 
             await register(username, password, email);
