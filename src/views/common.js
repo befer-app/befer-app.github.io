@@ -9,6 +9,6 @@ export const field = ({ label, name, placeholder, type = 'text', value = '', err
         return html`
         <label>${label}</label>
         <input class=${classMap({ error })} type=${type} placeholder=${placeholder} name=${name} .value=${value}>
-        ${error ? html`<p class="errorText">${error}</p>` : ''}`;
+        ${error && error != true ? html`<p class="errorText">${error}</p>` : ''}`;
     }
 }

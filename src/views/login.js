@@ -7,20 +7,22 @@ const loginTemplate = (onSubmit, errors, data) => html`
 <form @submit=${onSubmit}>
     <h2>Login</h2>
     <div>
-        ${field({ label: 'Username', name: 'username', value: data.username, placeholder: 'Username', error: errors.username })}
+        ${field({ label: 'Username', name: 'username', value: data.username, placeholder: 'Username', error:
+        errors.username })}
     </div>
     <div>
-        ${field({ label: 'Password', name: 'password', type: 'password', placeholder: 'Password', error: errors.password})}
+        ${field({ label: 'Password', name: 'password', type: 'password', placeholder: 'Password', error:
+        errors.password })}
     </div>
     <button class="btn" type="submit">Login</button>
-    <div class="registerPath">You don't have a profile? &nbsp; <a class="registerPath" href="/register"><b><u>Join Befer now!</u></b></a></div>    
+    <div class="registerPath">You don't have a profile? &nbsp; <a class="registerPath" href="/register"><b><u>Join Befer now!</u></b></a></div>
 </form>`;
 
 export function loginPage(ctx) {
     update();
 
     function update(errors = {}, data = {}) {
-        const fieldNames = [ 'username', 'password' ];
+        const fieldNames = ['username', 'password'];
 
         ctx.render(loginTemplate(createSubmitHandler(onSubmit, fieldNames), errors, data));
     }
@@ -45,6 +47,11 @@ export function loginPage(ctx) {
             ctx.page.redirect('/');
         } catch (err) {
             SlickLoader.disable();
+
+            if (err.code == 101) {
+                err.username = true;
+                err.password = true;
+            }
 
             update(err, { username });
         }

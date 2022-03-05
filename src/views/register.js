@@ -63,6 +63,12 @@ export function registerPage(ctx) {
         } catch (err) {
             SlickLoader.disable();
 
+            if (err.code == 202) {
+                err.username = err.message;
+            } else if (err.code == 203) {
+                err.email = err.message;
+            }
+
             update(err, { username, email });
         }
     }
